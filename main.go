@@ -47,7 +47,7 @@ func main() {
 	var ctx = context.Background()
 	go func() {
 		fmt.Println("listen on port", httpAddr)
-		handler := account.NewHTTPServer(ctx, endpoints)
+		handler := account.NewHTTPServer(ctx, endpoints, logger)
 		errs <- http.ListenAndServe(httpAddr, handler)
 	}()
 

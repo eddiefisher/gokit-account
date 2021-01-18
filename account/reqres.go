@@ -8,6 +8,11 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// ErrorResponse ...
+type ErrorResponse struct {
+	Error string `json:"error"`
+}
+
 // CreateUserRequest ...
 type CreateUserRequest struct {
 	Email    string `json:"email"`

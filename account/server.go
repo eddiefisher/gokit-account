@@ -2,15 +2,18 @@ package account
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
 
 	"github.com/go-kit/kit/auth/jwt"
+	"github.com/go-kit/kit/log"
+	"github.com/go-kit/kit/transport"
 	httptransport "github.com/go-kit/kit/transport/http"
 	"github.com/gorilla/mux"
 )
 
 // NewHTTPServer realized server over HTTP, registered routers
-func NewHTTPServer(ctx context.Context, endpoints Endpoints) http.Handler {
+func NewHTTPServer(ctx context.Context, endpoints Endpoints, logger log.Logger) http.Handler {
 	r := mux.NewRouter()
 	r.Use(
 		commonMiddleware,
@@ -18,6 +21,8 @@ func NewHTTPServer(ctx context.Context, endpoints Endpoints) http.Handler {
 	)
 	options := []httptransport.ServerOption{
 		httptransport.ServerBefore(jwt.HTTPToContext()),
+		httptransport.ServerErrorEncoder(errorEncoder),
+		httptransport.ServerErrorHandler(transport.NewLogErrorHandler(logger)),
 	}
 
 	r.Methods(http.MethodPost).Path("/user").Handler(httptransport.NewServer(
@@ -35,4 +40,9 @@ func NewHTTPServer(ctx context.Context, endpoints Endpoints) http.Handler {
 	))
 
 	return r
+}
+
+func errorEncoder(_ context.Context, err error, w http.ResponseWriter) {
+	w.WriteHeader(http.StatusBadRequest)
+	json.NewEncoder(w).Encode(ErrorResponse{Error: err.Error()})
 }

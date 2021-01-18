@@ -23,12 +23,10 @@ func NewService(repository Repository, logger log.Logger) Service {
 func (s service) CreateUser(ctx context.Context, email string, password string) (string, error) {
 	logger := log.With(s.logger, "method", "CreateUser")
 
-	user := User{
+	uuid, err := s.repository.CreateUser(ctx, User{
 		Email:    email,
 		Password: password,
-	}
-
-	uuid, err := s.repository.CreateUser(ctx, user)
+	})
 	if err != nil {
 		_ = level.Error(logger).Log("err", err)
 		return "", err
