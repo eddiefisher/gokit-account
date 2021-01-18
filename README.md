@@ -2,11 +2,12 @@
 
 ## install database
 
-initialize uuid extension
-- CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
 create table users
 ```sql
+-- Iinitialize uuid extension ------------------------------------
+
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 -- Not all database features are supported. Do not use for backup.
 -- Table Definition ----------------------------------------------
 
