@@ -8,6 +8,7 @@ services:
     ports:
       - 8088:8080
     environment:
+      ENVIRONMENT: dev
       DATABASE_URL: "postgresql://postgres:postgres@db:5432/gokitexample?sslmode=disable"
       HTTP_ADDR: ":8080"
 
