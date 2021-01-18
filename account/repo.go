@@ -25,24 +25,25 @@ func NewRepo(db *pgx.Conn, logger log.Logger) Repository {
 	}
 }
 
-func (r repo) CreateUser(ctx context.Context, user User) error {
-	sql := `insert into users (email, password) values ($1, $2)`
+func (r repo) CreateUser(ctx context.Context, user User) (string, error) {
+	sql := `INSERT INTO users (email, password) VALUES ($1, $2) RETURNING uuid`
 	if user.Email == "" || user.Password == "" {
-		return ErrRepo
+		return "", ErrRepo
 	}
 
-	_, err := r.db.Exec(ctx, sql, user.Email, user.Password)
+	var uuid string
+	err := r.db.QueryRow(ctx, sql, user.Email, user.Password).Scan(&uuid)
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	return nil
+	return uuid, nil
 }
 
 func (r repo) GetUser(ctx context.Context, uuid string) (string, error) {
 	var email string
 
-	err := r.db.QueryRow(ctx, "select email from users where uuid=$1", uuid).Scan(&email)
+	err := r.db.QueryRow(ctx, "SELECT email FROM users WHERE uuid=$1", uuid).Scan(&email)
 	if err != nil {
 		return "", ErrRepo
 	}

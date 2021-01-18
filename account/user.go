@@ -11,6 +11,6 @@ type User struct {
 
 // Repository its gateway for any database
 type Repository interface {
-	CreateUser(ctx context.Context, user User) error
+	CreateUser(ctx context.Context, user User) (string, error)
 	GetUser(ctx context.Context, uuid string) (string, error)
 }

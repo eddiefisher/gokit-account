@@ -28,14 +28,15 @@ func (s service) CreateUser(ctx context.Context, email string, password string) 
 		Password: password,
 	}
 
-	if err := s.repository.CreateUser(ctx, user); err != nil {
+	uuid, err := s.repository.CreateUser(ctx, user)
+	if err != nil {
 		_ = level.Error(logger).Log("err", err)
 		return "", err
 	}
 
 	_ = logger.Log("create user")
 
-	return "Success", nil
+	return uuid, nil
 }
 
 func (s service) GetUser(ctx context.Context, uuid string) (string, error) {

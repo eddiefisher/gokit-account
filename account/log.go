@@ -19,7 +19,11 @@ func NewLogger(filepath string) log.Logger {
 		os.Exit(1)
 	}
 
-	logger = log.NewJSONLogger(log.NewSyncWriter(file))
+	if os.Getenv("ENVIRONMENT") == "dev" {
+		logger = log.NewLogfmtLogger(os.Stdout)
+	} else {
+		logger = log.NewJSONLogger(log.NewSyncWriter(file))
+	}
 	logger = log.NewSyncLogger(logger)
 	logger = log.With(logger,
 		"service", "account",

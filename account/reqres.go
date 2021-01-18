@@ -16,7 +16,7 @@ type CreateUserRequest struct {
 
 // CreateUserResponse ...
 type CreateUserResponse struct {
-	Ok string `json:"ok"`
+	UUID string `json:"uuid"`
 }
 
 // GetUserRequest ...

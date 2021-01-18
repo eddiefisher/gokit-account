@@ -24,8 +24,8 @@ func makeCreateUserEndpoint(s Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
 		// typecast request to CreateUserRequest
 		req := request.(CreateUserRequest)
-		ok, err := s.CreateUser(ctx, req.Email, req.Password)
-		return CreateUserResponse{Ok: ok}, err
+		uuid, err := s.CreateUser(ctx, req.Email, req.Password)
+		return CreateUserResponse{UUID: uuid}, err
 	}
 }
 
