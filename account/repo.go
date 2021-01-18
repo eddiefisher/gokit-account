@@ -4,7 +4,6 @@ package account
 import (
 	"context"
 	"errors"
-	"fmt"
 
 	"github.com/go-kit/kit/log"
 	"github.com/jackc/pgx/v4"
@@ -32,12 +31,10 @@ func (r repo) CreateUser(ctx context.Context, user User) error {
 		return ErrRepo
 	}
 
-	ptag, err := r.db.Exec(ctx, sql, user.Email, user.Password)
+	_, err := r.db.Exec(ctx, sql, user.Email, user.Password)
 	if err != nil {
 		return err
 	}
-
-	fmt.Println(ptag.String())
 
 	return nil
 }

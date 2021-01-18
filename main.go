@@ -9,24 +9,12 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
 	"github.com/jackc/pgx/v4"
 )
 
 func main() {
-	// logger settings
-	var logger log.Logger
-
-	logger = log.NewLogfmtLogger(os.Stderr)
-	logger = log.NewSyncLogger(logger)
-	logger = log.With(logger,
-		"service", "account",
-		"time:", log.DefaultTimestampUTC,
-		"caller", log.DefaultCaller,
-	)
-
-	_ = level.Info(logger).Log("msg", "service started")
+	logger := account.NewLogger("./logs/app.log")
 	ended := func() { _ = level.Info(logger).Log("msg", "service ended") }
 	defer ended()
 

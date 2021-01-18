@@ -1,9 +1,9 @@
 package account
 
 import (
-	"fmt"
-
 	jwtgo "github.com/dgrijalva/jwt-go"
+	"github.com/go-kit/kit/auth/jwt"
+	"github.com/go-kit/kit/endpoint"
 )
 
 // ServiceClaims ...
@@ -27,34 +27,12 @@ func createToken() (string, error) {
 	if err != nil {
 		return "", nil
 	}
+
 	return token, nil
 }
 
-func parseToken(token string) (*jwtgo.Token, error) {
-	return jwtgo.Parse(token, func(token *jwtgo.Token) (interface{}, error) {
-		return []byte("gokit-secret-key"), nil
-	})
-}
-
-func validateToken(token *jwtgo.Token, err error) error {
-	if err != nil {
-		return err
-	}
-
-	if token.Valid {
-		return nil
-	}
-
-	if ve, ok := err.(*jwtgo.ValidationError); ok {
-		if ve.Errors&jwtgo.ValidationErrorMalformed != 0 {
-			return fmt.Errorf("That's not even a token")
-		} else if ve.Errors&(jwtgo.ValidationErrorExpired|jwtgo.ValidationErrorNotValidYet) != 0 {
-			// Token is either expired or not active yet
-			return fmt.Errorf("Timing is everything")
-		} else {
-			return fmt.Errorf("Couldn't handle this token: %v", err)
-		}
-	} else {
-		return fmt.Errorf("Couldn't handle this token: %v", err)
-	}
+// AuthJSONMiddleware ...
+func AuthJSONMiddleware(token string) endpoint.Middleware {
+	kf := func(token *jwtgo.Token) (interface{}, error) { return []byte("secret-key"), nil }
+	return jwt.NewParser(kf, jwtgo.SigningMethodES256, jwt.StandardClaimsFactory)
 }

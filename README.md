@@ -18,5 +18,5 @@ CREATE TABLE users (
 
 -- Indices -------------------------------------------------------
 
-CREATE UNIQUE INDEX users_pkey ON users(id uuid_ops);
+CREATE UNIQUE INDEX users_pkey ON users(uuidid uuid_ops);
 ```
